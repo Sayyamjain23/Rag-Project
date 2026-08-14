@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 from htmlTemplates import css, bot_template, user_template
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
-
+from langchain_community.embeddings import HuggingFaceInstructEmbeddings
+from langchain_community.vectorstores import FAISS
 
 def get_pdf_text(pdf_docs):
     text=""
@@ -23,6 +24,10 @@ def get_text_chunks(raw_text):
     chunks= text_splitter.split_text(raw_text)
     return chunks
 
+def get_vectorstore(text_chunks):
+    embeddings=HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
+    vectorstore=FAISS.from_texts(texts=text_chunks, embedding=embeddings)
+    return vectorstore
 
 
 
@@ -55,6 +60,10 @@ def main():
                 raw_text= get_pdf_text(pdf_docs)
                 text_chunks= get_text_chunks(raw_text)
                 st.success("Processing complete!")
+                vectorstore=get_vectorstore(text_chunks)
+                st.session_state.vectorstore=vectorstore
+                st.success("Vectorstore created successfully!")
+
 
 
 if __name_ == "__main__":
