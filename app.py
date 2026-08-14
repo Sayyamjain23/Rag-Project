@@ -18,7 +18,7 @@ def get_pdf_text(pdf_docs):
     return text
 
 def get_text_chunks(raw_text):
-    text_splitter=characterTextSplitter(
+    text_splitter=CharacterTextSplitter(
         separator="\n",
         chunk_size=1000,
         chunk_overlap=200,
@@ -85,12 +85,12 @@ def main():
                 st.write("Processing your documents...")
                 raw_text= get_pdf_text(pdf_docs)
                 text_chunks= get_text_chunks(raw_text)
-                st.success("Processing complete!")
+                #st.success("Processing complete!")
                 vectorstore=get_vectorstore(text_chunks)
                 st.session_state.vectorstore=vectorstore
                 st.success("Vectorstore created successfully!")
 
                 st.session_state.conversation= get_conversation_chain(vectorstore)
 
-if __name_ == "__main__":
+if __name__ == "__main__":
     main()           
