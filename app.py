@@ -5,6 +5,9 @@ from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceInstructEmbeddings
 from langchain_community.vectorstores import FAISS
+from langchain.memory import ConversationBufferMemory
+from langchain.chains import ConversationalRetrievalChain
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 def get_pdf_text(pdf_docs):
     text=""
@@ -30,7 +33,15 @@ def get_vectorstore(text_chunks):
     return vectorstore
 
 
-
+def get_conversation_chain(vectorstore):
+    llm=ChatGoogleGenerativeAI(model="gemini-3.6-flash", temperature=0.5)
+    memory=ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+    conversation_chain=ConversationalRetrievalChain.from_llm(
+        llm=llm,
+        retriever=vectorstore.as_retriever(),
+        memory=memory
+    )
+    return conversation_chain
 
 
 
@@ -49,6 +60,8 @@ def main():
         st.session_state.chat_history = None
     st.header("Chat with multiple PDFs :books:")
     user_question= st.text_input("Ask a question about your documents:")
+    if user_question:
+        handle_userinput(user_question)
 
     with st.sidebar:
         st.subheader("Your documents")
@@ -64,7 +77,7 @@ def main():
                 st.session_state.vectorstore=vectorstore
                 st.success("Vectorstore created successfully!")
 
-
+                st.session_state.conversation= get_conversation_chain(vectorstore)
 
 if __name_ == "__main__":
     main()           
