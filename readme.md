@@ -42,3 +42,29 @@ Follow these exact steps to install and set up the project on your local machine
 ```bash
 git clone [https://github.com/Sayyamjain23/Rag-Project.git](https://github.com/Sayyamjain23/Rag-Project.git)
 cd Rag-Project
+
+**2. Create and activate a virtual environment (Recommended)**
+```bash
+# On Windows
+python -m venv venv
+venv\Scripts\activate
+
+# On macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
+
+**3. Install dependencies**
+```bash
+pip install streamlit PyPDF2 langchain langchain-community langchain-google-genai faiss-cpu python-dotenv InstructorEmbedding sentence-transformers
+
+**4. Configure Environment Variables**
+```bash
+GOOGLE_API_KEY=your_actual_google_api_key_here
+
+## 💻 Usage
+
+### 1. Launch the Application
+Run the following command in your terminal to start the Streamlit server:
+
+```bash
+streamlit run app.py
